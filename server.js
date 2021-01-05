@@ -1,4 +1,6 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 const app = express();
 
 module.exports = app;
@@ -9,17 +11,33 @@ module.exports = app;
 const PORT = process.env.PORT || 4001;
 
 // Add middleware for handling CORS requests from index.html
-
+app.use(cors());
 
 // Add middware for parsing request bodies here:
+app.use(bodyParser.json());
 
 
+app.get('/', (req, res, next) => {
+	res.sendFile('/Users/jinmeng1/Desktop/Coding/Codecademy/bossMachine/index.html');
+});
 // Mount your existing apiRouter below at the '/api' path.
 const apiRouter = require('./server/api');
+app.use('/api', apiRouter);
+
+const ideasRouter = require('./server/ideasRouter');
+app.use('/api/ideas', ideasRouter);
+
+const meetingsRouter = require('./server/meetingsRouter');
+app.use('/api/meetings', meetingsRouter);
+
+const minionsRouter = require('./server/minionsRouter');
+app.use('/api/minions', minionsRouter);
 
 
 // This conditional is here for testing purposes:
 if (!module.parent) { 
   // Add your code to start the server listening at PORT below:
-
+  app.listen(PORT, () => {
+  	console.log(`Server is listening on ${PORT}`);
+  });
 }
